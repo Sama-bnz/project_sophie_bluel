@@ -185,4 +185,15 @@ footer nav ul {
 	justify-content: flex-end;
 	margin: 2em
 }
+.category{
+	display: flex;
+}
+.category_label{
+	border: solid 1px black;
+    border-radius: 10px;
+    height: 20px;
+    width: 50px;
+	margin-right: 5%;
+}
+
 
