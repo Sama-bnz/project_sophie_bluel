@@ -1,7 +1,8 @@
 let works = [];
 const gallery = document.getElementsByClassName("gallery");
 const category = document.getElementsByClassName("category");
-
+const authentication = document.getElementById("authentication");
+const favDialog = document.getElementById('favDialog');
 
 async function fetchData (url) {
   try {
@@ -17,24 +18,6 @@ async function fetchData (url) {
     console.error(error.message);
   }
 } 
-
-async function login(user){
-  try {
-    const response = await fetch("http://localhost:5678/api/users/login", {
-      body: JSON.stringify({ email: user.email, password : user.password }),
-      
-    });    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
-    const json = await response.json();
-    console.log(json);
-    return json;
-  } catch (error) {
-    console.error(error.message);
-  }
-  
-}
 
 async function loadWorks() {
     const url = "http://localhost:5678/api/works";
@@ -86,7 +69,10 @@ async function showCategories() {
       template+=templateCategory(category)
     });
   console.log(template);
+  template += `<button id="showModale">Modifier</button>`
   category[0].innerHTML = template;
+  showModale();
+
 }
 function loadWorkByCategory(element){
   console.log(element.target.id);
@@ -101,7 +87,38 @@ function loadWorkByCategory(element){
   }
   
 }
+function initAuthZone() {
+  const token = localStorage.getItem("token");
+  console.log(token)
+  let template = `<a href="./login.html">login</a>`;
+  if(token!=undefined && token != null && token != "") {
+    template = `<a href="#" id="logout">logout</a>`
+  }
+  authentication.innerHTML = template;
+  console.log(template);
+  logout();
+}
+function logout() {
+  const logout = document.getElementById("logout");
+  const token = localStorage.getItem("token");
+  if(logout!=null && logout != undefined){
+    logout.addEventListener("click", function(){
+      if(token!=undefined && token != null && token != "") {
+        localStorage.removeItem("token");
+        window.location.reload();
+      }
+    });
+  }
+  
+}
+function showModale(){
+  const buttonModale = document.getElementById('showModale');
+  buttonModale.addEventListener('click', () => {
+    favDialog.showModal();
+  });
+}
 showWorks();
 showCategories();
+initAuthZone();
 
 

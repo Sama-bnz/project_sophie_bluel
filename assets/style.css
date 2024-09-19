@@ -147,12 +147,10 @@ li:hover {
 .category_label:focus{
 	color: white;
 	background-color: #1D6154;
-	border: 2px solid red;
 }
 .category_label:active{
 	color: white;
 	background-color: #1D6154;
-	border: 2px solid blue;
 }
 #portfolio h2 {
 	text-align: center;
@@ -218,6 +216,11 @@ footer nav ul {
 	justify-content: flex-end;
 	margin: 2em
 }
+:modal {
+	background-color: beige;
+	border: 2px solid burlywood;
+	border-radius: 5px;
+  }
 
 
 
