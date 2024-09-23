@@ -117,6 +117,29 @@ function showModale(){
     favDialog.showModal();
   });
 }
+
+document.getElementById('photo').addEventListener('change', function(event) {
+  // Récupère le fichier sélectionné
+  const file = event.target.files[0]; 
+  // Sélectionne l'élément d'aperçu
+  const preview = document.getElementById('photoPreview'); 
+  // Le bouton d'ajout de photo
+  const label = document.getElementById('photoLabel'); 
+
+  if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          // Change le style de fond du conteneur d'aperçu
+          preview.style.backgroundImage = `url(${e.target.result})`;
+          // Montre l'aperçu
+          preview.style.display = 'block'; 
+          // Cache le bouton d'ajout de photo
+          label.style.display = 'none'; 
+      }
+      // Lit l'image comme une URL data
+      reader.readAsDataURL(file); 
+  }
+});
 showWorks();
 showCategories();
 initAuthZone();

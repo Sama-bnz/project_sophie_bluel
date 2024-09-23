@@ -216,6 +216,8 @@ footer nav ul {
 	justify-content: flex-end;
 	margin: 2em
 }
+
+/* FIRST MODAL CSS */
 :modal {
 	background-color: white;
 	border: none;
@@ -231,13 +233,25 @@ footer nav ul {
   	padding: 20px 50px;
 }
 .modal_title {
-    width: 100%;
+	flex-grow: 1;
     text-align: center;
     color: black;
     font-family: 'Work Sans';
     font-weight: 400;
 }
-
+.header_modal{
+	display: flex;
+	position: relative;
+    align-items: center; /* Aligne verticalement le titre et l'icône */
+	width: 100%;
+}
+.close-icon {
+	position: absolute;
+	right: 0;
+    font-size: 24px; 
+    cursor: pointer; 
+    color: #333; 
+}
 .image-container {
 	position: relative;
 	display: inline-block; 
@@ -278,7 +292,54 @@ footer nav ul {
     border-radius: 60px;
 	height: 36px;
 	border: none;
+	cursor: pointer;
 }
+
+/* SECOND MODAL CSS */
+
+.photo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="file"],
+input[type="text"],
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.photo-btn {
+    background-color: #CBD6DC;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    font-weight: bold;
+}
+.photo-preview {
+    margin-top: 10px;
+    width: 200px;
+    height: 200px;
+    background-color: #f0f0f0;
+    display: none; /* Caché par défaut */
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+}
+
 
 
 
