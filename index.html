@@ -64,16 +64,30 @@
 			<input type="submit" value="Envoyer">
 		</form>
 	</section>
+	
+
 	<dialog id="favDialog">
+		<div class="header_modal">
+			<h2 class="modal_title">Galerie photo</h2>
+			<i id="closeModal" class="fa-solid fa-xmark close-icon"></i>
+		</div>
+		<form id="formDialog" method="dialog">
+		</form>
+		<hr class="separator">
+		<button id="addPictureDialog" class="addPhoto">Ajouter une photo</button>
+	</dialog>
+		
+	<dialog id="favImageDialog">
 		<div class="header_modal"></div>
 			<h2 class="modal_title">Ajout photo</h2>
-			<i class="fa-solid fa-xmark close-icon"></i>
+			<i id="closePictureModal"M class="fa-solid fa-xmark close-icon"></i>
 		</div>
-		<form method="dialog" class="photo-form">
+		<form method="post" class="photo-form">
 			<div class="form-group">
 				<label for="photo" class="photo-btn" id="photoLabel">+ Ajouter photo </label>
 				<input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
 				<div id="photoPreview" class="photo-preview"></div> 
+				<p>jpg, png : 4mo max</p>
 			</div>
 
 			<div class="form-group">
@@ -83,70 +97,14 @@
 
 			<div class="form-group">
 				<label for="category">Catégorie</label>
-				<select id="category" name="category" required>
-					<option value=""></option>
-					<option value="Objets">Objets</option>
-					<option value="Appartements">Appartements</option>
-					<option value="Hotels & restaurants">Hotels & restaurants</option>
+				<select id="categorySelectBox" name="category" required>
 				</select>
 			</div>
 
 			<div class="form-group">
-				<button type="submit" class="addPhoto">Valider</button>
+				<button type="submit" id="validatePicture" class="addPhoto">Valider</button>
 			</div>
 		</form>
-
-	<!-- <dialog id="favDialog">
-		<div class="header_modal">
-			<h2 class="modal_title">Galerie photo</h2>
-			<i class="fa-solid fa-xmark close-icon"></i>
-		</div>
-		<form method="dialog">
-		  <div class="image-container">
-			<img src="./assets/images/abajour-tahina.png"  alt="1">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/appartement-paris-v.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/appartement-paris-x.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		</div>
-		<div class="image-container">
-			<img src="./assets/images/appartement-paris-xviii.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/bar-lullaby-paris.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/hotel-first-arte-new-delhi.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/la-balisiere.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/le-coteau-cassis.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/restaurant-sushisen-londres.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		  <div class="image-container">
-			<img src="./assets/images/structures-thermopolis.png" alt="">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
-		  </div>
-		</form>
-		<hr class="separator">
-		<button class="addPhoto">Ajouter une photo</button>
-	</dialog> -->
-		
 	</dialog>
 
 </main>
