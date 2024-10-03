@@ -124,15 +124,51 @@ async function loadImageModal(){
 function templateModalImage(work){
   return `<div class="image-container">
 			<img src="${work.imageUrl}"  alt="1">
-			<i class="fa-solid fa-trash-can trash-icon" ></i>
+			<i id="icon-${work.id}" onclick="deleteWork(${work.id})" class="fa-solid fa-trash-can trash-icon" ></i>
 		  </div>`
+}
+async function deleteWork(id){
+  console.log(id);
+  if (confirm("Voulez-vous supprimer l'élement?")) {
+    const response = await deleteApi(id);
+    if(response.ok){
+      loadImageModal();
+    }
+  }
+}
+
+async function deleteApi(id){
+  const token = localStorage.getItem("token");
+  const headers = { 'Authorization': `Bearer ${token}`};
+
+  const response = await fetch('http://localhost:5678/api/works/' + id, {
+    method: 'DELETE',
+    headers:headers
+    
+  })
+  return response;
+}
+function onDelete(idElement){
+  const iconDelete = document.getElementById(idElement);
+  console.log(iconDelete);
+  iconDelete.addEventListener('click',() =>{
+    console.log('Hello world');
+  })
 }
 const addPictureButton = document.getElementById('validatePicture');
 
+//AFFICHER LE FORMULAIRE AJOUT DE PHOTO
 function showPictureModal() {
   const buttonModale = document.getElementById('addPictureDialog');
   buttonModale.addEventListener('click', () => {
     favImageDialog.showModal();
+    document.getElementById('photoForm_modal').reset();
+    const preview = document.getElementById('photoPreview'); 
+    const label = document.getElementById('photoLabel'); 
+    label.style.display='block';
+    preview.style.display= 'none';
+    preview.style.backgroundImage ="";
+    preview.innerHTML = "";
     closeModal(closePictureModal, favImageDialog);
     fillSelectCategory();
     loadImage();
@@ -164,6 +200,19 @@ async function addPictureEvent(event){
   const title = pictureTitle.value;
   const category = categorySelectBox.value;
   const photo = document.querySelector("#photo");
+  if(title == undefined || title == null || title == ''){
+    alert ("Vous devez renseigner le titre ");
+    return;
+  }
+  if(category == undefined || category == null || category == ''){
+    alert("Vous devez renseigner la catégorie");
+    return;
+  }
+  console.log(photo.files);
+  if(photo.files.length == 0){
+    alert("Vous devez sélectionner une photo");
+    return;
+  }
   console.log(photo.files[0]);
   console.log(title);
   console.log(category);
@@ -237,6 +286,8 @@ function reloadWork(){
     }
   });
 }
+
+
 reloadWork();
 reloadModal();
 showWorks();
