@@ -169,16 +169,36 @@ function showPictureModal() {
     preview.style.display= 'none';
     preview.style.backgroundImage ="";
     preview.innerHTML = "";
-    closeModal(closePictureModal, favImageDialog);
+    closeModal(closePictureModal, favImageDialog, resetFormShowPictureModal);
     fillSelectCategory();
     loadImage();
     addPictureButton.addEventListener('click', addPictureEvent);
   });
 }
+function resetFormShowPictureModal(){
+  document.getElementById('photoForm_modal').reset();
+  const preview = document.getElementById('photoPreview'); 
+  const label = document.getElementById('photoLabel'); 
+  label.style.display='block';
+  preview.style.display= 'none';
+  preview.style.backgroundImage ="";
+  preview.innerHTML = "";
+}
+function closeFavImageDialogWhenBackgroundIsClick(){
+  favImageDialog.addEventListener("click",(e)=>{
+    if (e.target === e.currentTarget) {
+      favImageDialog.close();
+    }
+  })
+}
+closeFavImageDialogWhenBackgroundIsClick();
 
-function closeModal(buttonClose, dialog){
+function closeModal(buttonClose, dialog,callback){
   buttonClose.addEventListener('click',() => {
     dialog.close();
+    if(callback){
+      callback();
+    }
   })
 }
 async function fillSelectCategory() {

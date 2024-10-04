@@ -226,9 +226,6 @@ footer nav ul {
 #favDialog{
 	width: 630px;
 	height: 688px;
-	display: flex;
-	align-items: center; 
-  	flex-wrap: wrap; 
   	gap: 15px; 
   	padding: 20px 50px;
 }
