@@ -121,6 +121,18 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
+.portfolio_header{
+	display: flex;
+    justify-content: center;
+    margin-bottom: 1%;
+}
+.portfolio_button{
+	height: 22px;
+    background-color: white;
+    border: none;
+    margin-top: 0.5%;
+    margin-left: 1%;
+}
 .category{
 	display: flex;
 	justify-content: center;
@@ -140,6 +152,7 @@ li:hover {
 	cursor: pointer;
 	margin-bottom: 40px;
 }
+
 .category_label:hover{
 	color: white;
 	background-color: #1D6154;
@@ -148,7 +161,7 @@ li:hover {
 	color: white;
 	background-color: #1D6154;
 }
-.category_label:active{
+.active{
 	color: white;
 	background-color: #1D6154;
 }

@@ -8,6 +8,10 @@ const closeModalWindow = document.getElementById('closeModal');
 const closePictureModal = document.getElementById('closePictureModal');
 const categorySelectBox = document.getElementById('categorySelectBox');
 const formDialog = document.getElementById('formDialog');
+const categoryFilter = document.getElementById('category_filter');
+const categoryLabel = document.getElementsByClassName('category_label');
+const buttonModale = document.getElementById('showModale');
+const portfolioHeader = document.getElementsByClassName('portfolio_header');
 
 
 async function fetchData (url) {
@@ -16,7 +20,6 @@ async function fetchData (url) {
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-
     const json = await response.json();
     return json;
   } catch (error) {
@@ -51,11 +54,11 @@ function templateCategory(category) {
 
 async function showWorks() {
     works = await loadWorks();
-    buildWorksTemplateList();
+    buildWorksTemplateList(works);
 }
-function buildWorksTemplateList() {
+function buildWorksTemplateList(worksFiltered) {
   let template = "";
-    works.forEach((work) => {
+    worksFiltered.forEach((work) => {
         template+=templateWork(work.title,work.imageUrl)
       });
     gallery[0].innerHTML = template;
@@ -67,20 +70,25 @@ async function showCategories() {
   categories.forEach((category) => {
       template+=templateCategory(category)
     });
-  template += `<button id="showModale">Modifier</button>`
+  // template += `<button id="showModale">Modifier</button>`
   category[0].innerHTML = template;
   showModale();
-
 }
+
 function loadWorkByCategory(element){
   let index = element.target.id;
+  var current = document.getElementsByClassName("active");
+  if (current.length > 0) { 
+    current[0].className = current[0].className.replace(" active", "");
+  }
+  element.target.className += " active";
   if (index == 0){
     buildWorksTemplateList(works);
   }else{
     const worksFiltered = works.filter((work) => work.categoryId==index);
+    console.log(worksFiltered);
     buildWorksTemplateList(worksFiltered);
   }
-  
 }
 function initAuthZone() {
   const token = localStorage.getItem("token");
@@ -105,7 +113,6 @@ function logout() {
   
 }
 function showModale(){
-  const buttonModale = document.getElementById('showModale');
   buttonModale.addEventListener('click', async () => {
     await loadImageModal();
     favDialog.showModal();
@@ -306,12 +313,24 @@ function reloadWork(){
     }
   });
 }
+// Afficher ou pas le filtre quand on est connecté
+function showOrHideCategoryFilter(){
+  const token = localStorage.getItem("token");
+  if(token!=undefined && token != null && token != "") {
+    categoryFilter.style.display = "none";
+  } else {
+    categoryFilter.style.display = "flex";
+  }
+}
 
+function showOrHideUpdateButton(){
+  portfolioHeader[0].insertAdjacentHTML("beforeend",`<button class="portfolio_button"id="showModale"><i class="fa-regular fa-pen-to-square"></i>modifier</button>`); 
+}
 
 reloadWork();
 reloadModal();
 showWorks();
 showCategories();
 initAuthZone();
-
-
+showOrHideCategoryFilter();
+showOrHideUpdateButton();
