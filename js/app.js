@@ -10,7 +10,6 @@ const categorySelectBox = document.getElementById('categorySelectBox');
 const formDialog = document.getElementById('formDialog');
 const categoryFilter = document.getElementById('category_filter');
 const categoryLabel = document.getElementsByClassName('category_label');
-const buttonModale = document.getElementById('showModale');
 const portfolioHeader = document.getElementsByClassName('portfolio_header');
 
 
@@ -72,7 +71,6 @@ async function showCategories() {
     });
   // template += `<button id="showModale">Modifier</button>`
   category[0].innerHTML = template;
-  showModale();
 }
 
 function loadWorkByCategory(element){
@@ -113,6 +111,7 @@ function logout() {
   
 }
 function showModale(){
+  const buttonModale = document.getElementById('showModale');
   buttonModale.addEventListener('click', async () => {
     await loadImageModal();
     favDialog.showModal();
@@ -295,22 +294,15 @@ async function postWork(work){
 }
 function reloadModal() {
   favImageDialog.addEventListener("close", async (e) => {
-    console.log(favImageDialog.returnValue);
     if(favImageDialog.returnValue == 'ok'){
       await loadImageModal();
-      favDialog.returnValue = 'ok';
     }
   });
 }
 
 function reloadWork(){
   favDialog.addEventListener("close",async (e) => {
-    console.log("bonjour");
-    console.log(favDialog.returnValue);
-    if(favDialog.returnValue == 'ok'){
       await showWorks();
-      // favDialog.returnValue = 'ok';
-    }
   });
 }
 // Afficher ou pas le filtre quand on est connecté
@@ -324,13 +316,19 @@ function showOrHideCategoryFilter(){
 }
 
 function showOrHideUpdateButton(){
-  portfolioHeader[0].insertAdjacentHTML("beforeend",`<button class="portfolio_button"id="showModale"><i class="fa-regular fa-pen-to-square"></i>modifier</button>`); 
+  // portfolioHeader[0].insertAdjacentHTML("beforeend",`<button class="portfolio_button"id="showModale"><i class="fa-regular fa-pen-to-square"></i>modifier</button>`); 
+  const token = localStorage.getItem("token");
+  if(token!=undefined && token != null && token != "") {
+    portfolioHeader[0].insertAdjacentHTML("beforeend",`<button class="portfolio_button" id="showModale"><i class="fa-regular fa-pen-to-square"></i>modifier</button>`); 
+    showModale();
+  }
 }
+
 
 reloadWork();
 reloadModal();
 showWorks();
+showOrHideUpdateButton();
 showCategories();
 initAuthZone();
 showOrHideCategoryFilter();
-showOrHideUpdateButton();

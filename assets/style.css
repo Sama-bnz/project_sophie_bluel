@@ -125,13 +125,15 @@ li:hover {
 	display: flex;
     justify-content: center;
     margin-bottom: 1%;
+	margin-left: 8%;
 }
 .portfolio_button{
 	height: 22px;
     background-color: white;
     border: none;
     margin-top: 0.5%;
-    margin-left: 1%;
+    margin-left: 2%;
+	cursor: pointer;
 }
 .category{
 	display: flex;
