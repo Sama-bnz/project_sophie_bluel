@@ -38,7 +38,6 @@ async function loadCategory() {
   const result = await fetchData(url);
   return result;
 }
-loadWorks();
 
 function templateWork(workLabel, workImage) {
     return `<figure>
