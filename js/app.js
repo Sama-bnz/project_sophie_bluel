@@ -174,6 +174,7 @@ function showPictureModal() {
     preview.style.display= 'none';
     preview.style.backgroundImage ="";
     preview.innerHTML = "";
+    // closeAllModal();
     closeModal(closePictureModal, favImageDialog, resetFormShowPictureModal);
     fillSelectCategory();
     loadImage();
@@ -189,6 +190,7 @@ function resetFormShowPictureModal(){
   preview.style.backgroundImage ="";
   preview.innerHTML = "";
 }
+
 function closeFavImageDialogWhenBackgroundIsClick(){
   favImageDialog.addEventListener("click",(e)=>{
     if (e.target === e.currentTarget) {
@@ -206,6 +208,18 @@ function closeModal(buttonClose, dialog,callback){
     }
   })
 }
+window.onclick = function(event) {
+  console.log(event.target.id)
+  if(event.target.id == "closePictureModal"){
+    favDialog.close();
+  }
+  }
+// function closeAllModal(){
+//   closePictureModal.addEventListener("click",()=>{
+//     favDialog.close();
+//     favImageDialog.close();
+//   })
+// }
 async function fillSelectCategory() {
   const categories = await loadCategory();
   let template = `<option value=""></option>`
@@ -315,7 +329,6 @@ function showOrHideCategoryFilter(){
 }
 
 function showOrHideUpdateButton(){
-  // portfolioHeader[0].insertAdjacentHTML("beforeend",`<button class="portfolio_button"id="showModale"><i class="fa-regular fa-pen-to-square"></i>modifier</button>`); 
   const token = localStorage.getItem("token");
   if(token!=undefined && token != null && token != "") {
     portfolioHeader[0].insertAdjacentHTML("beforeend",`<button class="portfolio_button" id="showModale"><i class="fa-regular fa-pen-to-square"></i>modifier</button>`); 

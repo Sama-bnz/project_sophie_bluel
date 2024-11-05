@@ -97,6 +97,11 @@ nav li {
 
 li:hover {
 	color: #B1663C;
+	cursor: pointer;
+}
+#logout{
+	text-decoration: none;
+	color: black;
 }
 #introduction {
 	display: flex;
@@ -239,30 +244,36 @@ footer nav ul {
 	border-radius: 10px;
 }
 #favDialog{
+	display: flex;
+	flex-direction: column;
 	width: 630px;
 	height: 688px;
-  	gap: 15px; 
   	padding: 20px 50px;
 }
-#favImageDialog{
-	width: 700px;
-	height: 700px;
-}
+
 .modal_title {
 	flex-grow: 1;
     text-align: center;
     color: black;
     font-family: 'Work Sans';
     font-weight: 400;
+	margin-top: 25px;
 }
 .header_modal{
 	display: flex;
 	position: relative;
-    align-items: center; /* Aligne verticalement le titre et l'icône */
-	width: 100%;
+    align-items: center; 
 }
+#formDialog {
+	display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 70px 90px;
+}
+
 .close-icon {
 	position: absolute;
+	top: 0;
 	right: 0;
     font-size: 24px; 
     cursor: pointer; 
@@ -270,10 +281,10 @@ footer nav ul {
 }
 .image-container {
 	position: relative;
-	display: inline-block; 
-	width: 76px; 
-	height: 102px; 
-	margin: 10px 5px;
+    display: inline-block;
+    width: 76px;
+    height: 102px;
+    margin: 15px 5px;
   }
   
 .image-container img {
@@ -294,9 +305,10 @@ footer nav ul {
   	cursor: pointer;
 }
 .separator {
-    width: 100%; 
+    width: 80%; 
     border: none; 
     border-top: 1px solid #B3B3B3; 
+	margin-bottom: 30px;
     
 }
 .addPhoto{
@@ -304,29 +316,78 @@ footer nav ul {
     color: white;
     background-color: #1D6154;
     margin:auto;
-    width: 210px;
+    width: 237px;
+	font-size: 14px;
     border-radius: 60px;
 	height: 36px;
 	border: none;
 	cursor: pointer;
+	margin-bottom: 25px;
 }
 
 /* SECOND MODAL CSS */
 
+#favImageDialog{
+	width: 700px;
+	height: 700px;
+}
+.modal_title2{
+    text-align: center;
+    color: black;
+    font-family: 'Work Sans';
+    font-weight: 400;
+	margin-top: 25px;
+	margin-bottom: 35px;
+}
+.image_add{
+	font-size: 76px;
+    text-align: center;
+	color: #B9C5CC;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+#photoLabel{
+	color: #306685;
+}
 .photo-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
+.form-group-image{
+	display: flex;
+	flex-direction: column;
+	background-color: #E8F1F6;
+	text-align: center;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	border-radius: 3px;
+	height: 169px;
+	width: 73%;
+    margin-left: 95px;
+}
 .form-group {
     display: flex;
     flex-direction: column;
+	align-items: center;
+}
+.form-group label{
+	align-self: flex-start; 
+    margin-left: 14%; 
+    font-weight: 500;
+    margin-bottom: 10px;
 }
 label {
     font-weight: bold;
     margin-bottom: 5px;
 }
-
+.separator2{
+	width: 73%; 
+    border: none; 
+    border-top: 1px solid #B3B3B3; 
+	margin-bottom: 30px;
+	margin-top: 45px;
+}
 input[type="file"],
 input[type="text"],
 select {
@@ -334,16 +395,19 @@ select {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
-
-.photo-btn {
-    background-color: #CBD6DC;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    display: inline-block;
-    font-weight: bold;
+#photoLabel {
+    display: inline-block; 
+	width: 173px;
+	height: 20px;
+	margin: 0 auto;
+    padding: 8px 20px; 
+    background-color: #CBD6DC; 
+    color: #306685; 
+    font-weight: bold; 
+    font-size: 14px; 
+    border-radius: 20px; 
+	line-height: normal; 
+    cursor: pointer; 
 }
 .photo-preview {
     margin-top: 10px;
@@ -355,14 +419,31 @@ select {
     background-position: center;
     border-radius: 10px;
 }
+.formatImage{
+	margin-top: 10px;
+}
+#validatePicture{
+	font-weight: 700;
+    color: white;
+    background-color: #B3B3B3;
+    margin: auto;
+    width: 237px;
+    font-size: 14px;
+    border-radius: 60px;
+    height: 36px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 25px;
+}
 #title{
-	width: 80%;
+	width: 70%;
     height: 31px;
     border: none;
     box-shadow: 0px 4px 14px 0px #00000017;
+	margin-bottom: 10px;
 }
 #categorySelectBox{
-	width: 83%;
+	width: 73%;
     height: 51px;
     border: none;
     box-shadow: 0px 4px 14px 0px #00000017;
