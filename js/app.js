@@ -11,6 +11,8 @@ const formDialog = document.getElementById('formDialog');
 const categoryFilter = document.getElementById('category_filter');
 const categoryLabel = document.getElementsByClassName('category_label');
 const portfolioHeader = document.getElementsByClassName('portfolio_header');
+const leftArrow = document.getElementById('left-arrow');
+const formGroupImage = document.getElementById('form-group-image');
 
 
 async function fetchData (url) {
@@ -113,9 +115,12 @@ function showModale(){
   const buttonModale = document.getElementById('showModale');
   buttonModale.addEventListener('click', async () => {
     await loadImageModal();
+    favDialog.style.display = "flex";
     favDialog.showModal();
     showPictureModal();
-    closeModal(closeModalWindow, favDialog);
+    closeModal(closeModalWindow, favDialog, ()=>{
+      favDialog.style.display = "none";
+    });
     });
 }
 async function loadImageModal(){
@@ -168,27 +173,45 @@ function showPictureModal() {
   buttonModale.addEventListener('click', () => {
     favImageDialog.showModal();
     document.getElementById('photoForm_modal').reset();
+    formGroupImage.innerHTML = loadContentFormGroupImage();
     const preview = document.getElementById('photoPreview'); 
     const label = document.getElementById('photoLabel'); 
     label.style.display='block';
-    preview.style.display= 'none';
-    preview.style.backgroundImage ="";
-    preview.innerHTML = "";
+    // preview.style.display= 'none';
+    // preview.style.backgroundImage ="";
+    // preview.innerHTML = "";
     // closeAllModal();
-    closeModal(closePictureModal, favImageDialog, resetFormShowPictureModal);
+    closeModal(closePictureModal, favImageDialog, closeAllModal);
+    closeModal(leftArrow, favImageDialog, backToFirstModal);
     fillSelectCategory();
     loadImage();
     addPictureButton.addEventListener('click', addPictureEvent);
   });
+}
+function loadContentFormGroupImage(){
+  return `
+        <i class="fa-regular fa-image image_add" id="icone-photo"></i>
+				<label for="photo" class="photo-btn" id="photoLabel">+ Ajouter photo </label>
+				<input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
+				<p class="formatImage" id="text-photo">jpg, png : 4mo max</p>`
+}
+function closeAllModal(){
+  resetFormShowPictureModal();
+  favDialog.style.display = "none";
+  favDialog.close();
+}
+function backToFirstModal(){
+  resetFormShowPictureModal();
 }
 function resetFormShowPictureModal(){
   document.getElementById('photoForm_modal').reset();
   const preview = document.getElementById('photoPreview'); 
   const label = document.getElementById('photoLabel'); 
   label.style.display='block';
-  preview.style.display= 'none';
-  preview.style.backgroundImage ="";
-  preview.innerHTML = "";
+  // preview.style.display= 'none';
+  // preview.style.backgroundImage ="";
+  // preview.innerHTML = "";
+  
 }
 
 function closeFavImageDialogWhenBackgroundIsClick(){
@@ -214,12 +237,7 @@ window.onclick = function(event) {
     favDialog.close();
   }
   }
-// function closeAllModal(){
-//   closePictureModal.addEventListener("click",()=>{
-//     favDialog.close();
-//     favImageDialog.close();
-//   })
-// }
+
 async function fillSelectCategory() {
   const categories = await loadCategory();
   let template = `<option value=""></option>`
@@ -233,12 +251,11 @@ function templateOptionCategory(category){
   return `<option value="${category.id}" class="category_label">${category.name}</option>`;
 }
 const pictureTitle = document.getElementById('title');// titre modale photo
-
+let photoData = null;
 async function addPictureEvent(event){
   event.preventDefault();
   const title = pictureTitle.value;
   const category = categorySelectBox.value;
-  const photo = document.querySelector("#photo");
   if(title == undefined || title == null || title == ''){
     alert ("Vous devez renseigner le titre ");
     return;
@@ -247,17 +264,12 @@ async function addPictureEvent(event){
     alert("Vous devez renseigner la catégorie");
     return;
   }
-  console.log(photo.files);
-  if(photo.files.length == 0){
-    alert("Vous devez sélectionner une photo");
-    return;
-  }
-  console.log(photo.files[0]);
+  
   console.log(title);
   console.log(category);
   const response = await postWork({
     title : title,
-    image : photo.files[0],
+    image : photoData,
     category : category
   })
   console.log(response);
@@ -270,20 +282,23 @@ function loadImage(){
   document.getElementById('photo').addEventListener('change', function(event) {
     // Récupère le fichier sélectionné
     const file = event.target.files[0]; 
+    const photo = document.querySelector("#photo");
+    console.log(photo.files);
+    if(photo.files.length == 0){
+      alert("Vous devez sélectionner une photo");
+      return;
+    }
+  photoData = photo.files[0];
+    formGroupImage.innerHTML = `<div id="photoPreview" class="photo-preview"></div>`
     // Sélectionne l'élément d'aperçu
     const preview = document.getElementById('photoPreview'); 
     // Le bouton d'ajout de photo
-    const label = document.getElementById('photoLabel'); 
-  
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
             // Change le style de fond du conteneur d'aperçu
             preview.style.backgroundImage = `url(${e.target.result})`;
-            // Montre l'aperçu
-            preview.style.display = 'block'; 
-            // Cache le bouton d'ajout de photo
-            label.style.display = 'none'; 
+            
         }
         // Lit l'image comme une URL data
         reader.readAsDataURL(file); 
