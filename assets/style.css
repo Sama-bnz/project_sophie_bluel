@@ -331,6 +331,9 @@ footer nav ul {
 	width: 700px;
 	height: 700px;
 }
+.left-arrow{
+	font-size: 21px;
+}
 .modal_title2{
     text-align: center;
     color: black;
