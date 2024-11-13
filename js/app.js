@@ -13,8 +13,11 @@ const categoryLabel = document.getElementsByClassName('category_label');
 const portfolioHeader = document.getElementsByClassName('portfolio_header');
 const leftArrow = document.getElementById('left-arrow');
 const formGroupImage = document.getElementById('form-group-image');
+let formImageFieldIsOk = false;
+let formTitleIsOk = false;
+let formCategoryIsOk = false;
 
-
+// Récupère les données JSON depuis une URL
 async function fetchData (url) {
   try {
     const response = await fetch(url);
@@ -24,38 +27,40 @@ async function fetchData (url) {
     const json = await response.json();
     return json;
   } catch (error) {
-    console.error(error.message);
+    // Gestion d'erreur pour les requêtes échouées
   }
 } 
-
+// Fonction qui charge les oeuvres depuis l'API et les renvoie
 async function loadWorks() {
     const url = "http://localhost:5678/api/works";
     const result = await fetchData(url);
     return result;
 }
-
+// Fonction qui charge les catégories depuis l'API et les renvoie
 async function loadCategory() {
   const url = "http://localhost:5678/api/categories";
 
   const result = await fetchData(url);
   return result;
 }
-
+// Génère le model HTML d'un oeuvre
 function templateWork(workLabel, workImage) {
     return `<figure>
 				<img src="${workImage}" alt="${workLabel}">
 				<figcaption>${workLabel}</figcaption>
 			</figure>`;
 }
-
+// Génère le modèle HTML d'une catégorie
 function templateCategory(category) {
   return `<div onclick="loadWorkByCategory(event);" id="${category.id}" class="category_label">${category.name}</div>`;
 }
 
+// Affiche toutes les œuvres en les chargeant depuis l'API
 async function showWorks() {
     works = await loadWorks();
     buildWorksTemplateList(works);
 }
+// Construit la liste des œuvres dans la galerie
 function buildWorksTemplateList(worksFiltered) {
   let template = "";
     worksFiltered.forEach((work) => {
@@ -64,16 +69,17 @@ function buildWorksTemplateList(worksFiltered) {
     gallery[0].innerHTML = template;
 }
 
+// Affiche les catégories en les chargeant depuis l'API
 async function showCategories() {
   const categories = await loadCategory();
   let template = `<div onclick="loadWorkByCategory(event);" id="0" class="category_label">Tous</div>`;
   categories.forEach((category) => {
       template+=templateCategory(category)
     });
-  // template += `<button id="showModale">Modifier</button>`
   category[0].innerHTML = template;
 }
 
+// Filtre les œuvres par catégorie sélectionnée et les affiche
 function loadWorkByCategory(element){
   let index = element.target.id;
   var current = document.getElementsByClassName("active");
@@ -85,10 +91,11 @@ function loadWorkByCategory(element){
     buildWorksTemplateList(works);
   }else{
     const worksFiltered = works.filter((work) => work.categoryId==index);
-    console.log(worksFiltered);
     buildWorksTemplateList(worksFiltered);
   }
 }
+
+// Initialise la zone d'authentification, affiche le bouton login ou logout selon le statut
 function initAuthZone() {
   const token = localStorage.getItem("token");
   let template = `<a href="./login.html">login</a>`;
@@ -98,6 +105,8 @@ function initAuthZone() {
   authentication.innerHTML = template;
   logout();
 }
+
+// Gère la déconnexion en supprimant le token et recharge la page
 function logout() {
   const logout = document.getElementById("logout");
   const token = localStorage.getItem("token");
@@ -109,8 +118,9 @@ function logout() {
       }
     });
   }
-  
 }
+
+// Affiche la modale principale pour ajouter une image
 function showModale(){
   const buttonModale = document.getElementById('showModale');
   buttonModale.addEventListener('click', async () => {
@@ -118,11 +128,15 @@ function showModale(){
     favDialog.style.display = "flex";
     favDialog.showModal();
     showPictureModal();
+    checkTitle();
+    checkCategory();
     closeModal(closeModalWindow, favDialog, ()=>{
       favDialog.style.display = "none";
     });
-    });
+  });
 }
+
+// Charge les images pour la première modale 
 async function loadImageModal(){
  let template = '';
  const works = await loadWorks();
@@ -131,14 +145,17 @@ async function loadImageModal(){
     });
   formDialog.innerHTML = template;
 }
+
+// Génère le modèle HTML pour une image avec un bouton de suppression
 function templateModalImage(work){
   return `<div class="image-container">
 			<img src="${work.imageUrl}"  alt="1">
 			<i id="icon-${work.id}" onclick="deleteWork(${work.id})" class="fa-solid fa-trash-can trash-icon" ></i>
 		  </div>`
 }
+
+// Supprime une œuvre avec confirmation utilisateur
 async function deleteWork(id){
-  console.log(id);
   if (confirm("Voulez-vous supprimer l'élement?")) {
     const response = await deleteApi(id);
     if(response.ok){
@@ -147,6 +164,7 @@ async function deleteWork(id){
   }
 }
 
+// API pour supprimer une œuvre
 async function deleteApi(id){
   const token = localStorage.getItem("token");
   const headers = { 'Authorization': `Bearer ${token}`};
@@ -160,14 +178,12 @@ async function deleteApi(id){
 }
 function onDelete(idElement){
   const iconDelete = document.getElementById(idElement);
-  console.log(iconDelete);
   iconDelete.addEventListener('click',() =>{
-    console.log('Hello world');
   })
 }
 const addPictureButton = document.getElementById('validatePicture');
 
-//AFFICHER LE FORMULAIRE AJOUT DE PHOTO
+// Affiche la modale d'ajout de photo et initialise le formulaire
 function showPictureModal() {
   const buttonModale = document.getElementById('addPictureDialog');
   buttonModale.addEventListener('click', () => {
@@ -177,10 +193,6 @@ function showPictureModal() {
     const preview = document.getElementById('photoPreview'); 
     const label = document.getElementById('photoLabel'); 
     label.style.display='block';
-    // preview.style.display= 'none';
-    // preview.style.backgroundImage ="";
-    // preview.innerHTML = "";
-    // closeAllModal();
     closeModal(closePictureModal, favImageDialog, closeAllModal);
     closeModal(leftArrow, favImageDialog, backToFirstModal);
     fillSelectCategory();
@@ -188,6 +200,8 @@ function showPictureModal() {
     addPictureButton.addEventListener('click', addPictureEvent);
   });
 }
+
+// Génère le contenu du groupe de champs pour le formulaire d'ajout d'image
 function loadContentFormGroupImage(){
   return `
         <i class="fa-regular fa-image image_add" id="icone-photo"></i>
@@ -195,25 +209,28 @@ function loadContentFormGroupImage(){
 				<input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
 				<p class="formatImage" id="text-photo">jpg, png : 4mo max</p>`
 }
+
+// Ferme toutes les modales et réinitialise le formulaire d'ajout de photo
 function closeAllModal(){
   resetFormShowPictureModal();
   favDialog.style.display = "none";
   favDialog.close();
 }
+
+// Fonction pour revenir à la première modale sans fermer
 function backToFirstModal(){
   resetFormShowPictureModal();
 }
+
+// Réinitialise le formulaire d'ajout de photo
 function resetFormShowPictureModal(){
   document.getElementById('photoForm_modal').reset();
   const preview = document.getElementById('photoPreview'); 
   const label = document.getElementById('photoLabel'); 
   label.style.display='block';
-  // preview.style.display= 'none';
-  // preview.style.backgroundImage ="";
-  // preview.innerHTML = "";
-  
 }
 
+// Ferme la modale d'ajout d'image quand on clique à l'extérieur
 function closeFavImageDialogWhenBackgroundIsClick(){
   favImageDialog.addEventListener("click",(e)=>{
     if (e.target === e.currentTarget) {
@@ -223,6 +240,7 @@ function closeFavImageDialogWhenBackgroundIsClick(){
 }
 closeFavImageDialogWhenBackgroundIsClick();
 
+// Ferme une modale spécifiée et exécute un rappel si fourni
 function closeModal(buttonClose, dialog,callback){
   buttonClose.addEventListener('click',() => {
     dialog.close();
@@ -232,12 +250,12 @@ function closeModal(buttonClose, dialog,callback){
   })
 }
 window.onclick = function(event) {
-  console.log(event.target.id)
   if(event.target.id == "closePictureModal"){
     favDialog.close();
   }
-  }
+}
 
+// Remplit la liste déroulante des catégories dans le formulaire
 async function fillSelectCategory() {
   const categories = await loadCategory();
   let template = `<option value=""></option>`
@@ -247,11 +265,14 @@ async function fillSelectCategory() {
   categorySelectBox.innerHTML = template;
 }
 
+// Génère un modèle HTML pour la liste déroulante 2eme modale
 function templateOptionCategory(category){
   return `<option value="${category.id}" class="category_label">${category.name}</option>`;
 }
-const pictureTitle = document.getElementById('title');// titre modale photo
+const pictureTitle = document.getElementById('title');
 let photoData = null;
+
+// Ajoute une œuvre à la collection en envoyant les données au backend
 async function addPictureEvent(event){
   event.preventDefault();
   const title = pictureTitle.value;
@@ -264,48 +285,42 @@ async function addPictureEvent(event){
     alert("Vous devez renseigner la catégorie");
     return;
   }
-  
-  console.log(title);
-  console.log(category);
   const response = await postWork({
     title : title,
     image : photoData,
     category : category
   })
-  console.log(response);
   if(response.ok){
     favImageDialog.close('ok');
   }
 }
 
+// Charge et prévisualise une image sélectionnée par l'utilisateur
 function loadImage(){
   document.getElementById('photo').addEventListener('change', function(event) {
-    // Récupère le fichier sélectionné
     const file = event.target.files[0]; 
     const photo = document.querySelector("#photo");
-    console.log(photo.files);
     if(photo.files.length == 0){
       alert("Vous devez sélectionner une photo");
       return;
     }
   photoData = photo.files[0];
     formGroupImage.innerHTML = `<div id="photoPreview" class="photo-preview"></div>`
-    // Sélectionne l'élément d'aperçu
     const preview = document.getElementById('photoPreview'); 
-    // Le bouton d'ajout de photo
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            // Change le style de fond du conteneur d'aperçu
             preview.style.backgroundImage = `url(${e.target.result})`;
             
         }
-        // Lit l'image comme une URL data
         reader.readAsDataURL(file); 
+        formImageFieldIsOk = true;
+        changeButtonState();
     }
   });
 }
 
+// Envoie une nouvelle œuvre au backend via une requête POST en utilisant un FormData
 async function postWork(work){
   const formData = new FormData();
   const token = localStorage.getItem("token");
@@ -320,6 +335,8 @@ async function postWork(work){
   });
   return response;
 }
+
+// Recharge la modale de sélection d'images si l'ajout d'image a été confirmé
 function reloadModal() {
   favImageDialog.addEventListener("close", async (e) => {
     if(favImageDialog.returnValue == 'ok'){
@@ -328,11 +345,13 @@ function reloadModal() {
   });
 }
 
+// Recharge la liste des œuvres lorsque la modale de gestion des œuvres est fermée
 function reloadWork(){
   favDialog.addEventListener("close",async (e) => {
       await showWorks();
   });
 }
+
 // Afficher ou pas le filtre quand on est connecté
 function showOrHideCategoryFilter(){
   const token = localStorage.getItem("token");
@@ -343,6 +362,7 @@ function showOrHideCategoryFilter(){
   }
 }
 
+// Affiche le bouton de modification du portfolio si l'utilisateur est connecté
 function showOrHideUpdateButton(){
   const token = localStorage.getItem("token");
   if(token!=undefined && token != null && token != "") {
@@ -351,6 +371,43 @@ function showOrHideUpdateButton(){
   }
 }
 
+// Vérifie si le champ de titre est valide, met à jour l'état du formulaire
+function checkTitle() {
+  const title = document.getElementById('title');
+  title.addEventListener("keyup", (event) => {
+    const titleValue = event.target.value;
+    if(titleValue != '' && titleValue!= null && titleValue != undefined){
+      formTitleIsOk = true;
+    } else {
+      formTitleIsOk = false;
+    }
+    changeButtonState();
+  });
+}
+
+// Vérifie si une catégorie a été sélectionnée et met à jour l'état du formulaire
+function checkCategory(){
+  const category = document.getElementById('categorySelectBox')
+  category.addEventListener("change",(event) =>{
+  const categoryValue = event.target.value;
+  if(categoryValue > 0 && categoryValue!= null && categoryValue != undefined){
+      formCategoryIsOk = true;
+  } else {
+    formCategoryIsOk = false;
+  }
+  changeButtonState();
+  })
+}
+
+// Change l'état du bouton de validation selon si tous les champs requis sont valides
+function changeButtonState(){
+  const validateFormButton = document.getElementById('validatePicture');
+  if(formTitleIsOk && formCategoryIsOk && formImageFieldIsOk){
+    validateFormButton.className = "validateButtonFormPicture";
+  } else {
+    validateFormButton.className = "invalidateButtonFormPicture";
+  }
+}
 
 reloadWork();
 reloadModal();
@@ -359,3 +416,4 @@ showOrHideUpdateButton();
 showCategories();
 initAuthZone();
 showOrHideCategoryFilter();
+
