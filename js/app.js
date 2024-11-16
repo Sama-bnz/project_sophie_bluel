@@ -13,6 +13,7 @@ const categoryLabel = document.getElementsByClassName('category_label');
 const portfolioHeader = document.getElementsByClassName('portfolio_header');
 const leftArrow = document.getElementById('left-arrow');
 const formGroupImage = document.getElementById('form-group-image');
+const headerParent = document.getElementById('header');
 let formImageFieldIsOk = false;
 let formTitleIsOk = false;
 let formCategoryIsOk = false;
@@ -39,7 +40,6 @@ async function loadWorks() {
 // Fonction qui charge les catégories depuis l'API et les renvoie
 async function loadCategory() {
   const url = "http://localhost:5678/api/categories";
-
   const result = await fetchData(url);
   return result;
 }
@@ -52,7 +52,7 @@ function templateWork(workLabel, workImage) {
 }
 // Génère le modèle HTML d'une catégorie
 function templateCategory(category) {
-  return `<div onclick="loadWorkByCategory(event);" id="${category.id}" class="category_label">${category.name}</div>`;
+  return `<div id="${category.id}" class="category_label">${category.name}</div>`;
 }
 
 // Affiche toutes les œuvres en les chargeant depuis l'API
@@ -72,11 +72,15 @@ function buildWorksTemplateList(worksFiltered) {
 // Affiche les catégories en les chargeant depuis l'API
 async function showCategories() {
   const categories = await loadCategory();
-  let template = `<div onclick="loadWorkByCategory(event);" id="0" class="category_label">Tous</div>`;
+  const categoryLabel = document.getElementsByClassName('category_label');
+  let template = `<div id="0" class="category_label active">Tous</div>`;
   categories.forEach((category) => {
       template+=templateCategory(category)
     });
   category[0].innerHTML = template;
+  for (var i = 0; i < categoryLabel.length; i++) {
+    categoryLabel[i].addEventListener('click', loadWorkByCategory);
+   }
 }
 
 // Filtre les œuvres par catégorie sélectionnée et les affiche
@@ -114,13 +118,17 @@ function logout() {
     logout.addEventListener("click", function(){
       if(token!=undefined && token != null && token != "") {
         localStorage.removeItem("token");
-        window.location.reload();
+        // window.location.reload();
+        initAuthZone();
+        showOrHideCategoryFilter();
+        showOrHideUpdateButton();
+        showOrHideEditionMod();
       }
     });
   }
 }
 
-// Affiche la modale principale pour ajouter une image
+// Affiche la première modale pour ajouter une image
 function showModale(){
   const buttonModale = document.getElementById('showModale');
   buttonModale.addEventListener('click', async () => {
@@ -144,20 +152,32 @@ async function loadImageModal(){
       template+=templateModalImage(work)
     });
   formDialog.innerHTML = template;
+  const removeWork = document.getElementsByClassName('remove_work');
+  for (var i = 0; i < removeWork.length; i++) {
+    for(let j = 0; j < works.length; j++){
+      removeWork[i].workId = j.id;
+    }
+    removeWork[i].addEventListener('click', (e)=>{
+      console.log(e);
+      deleteWork(e);
+    });
+   
+   }
 }
 
 // Génère le modèle HTML pour une image avec un bouton de suppression
 function templateModalImage(work){
   return `<div class="image-container">
 			<img src="${work.imageUrl}"  alt="1">
-			<i id="icon-${work.id}" onclick="deleteWork(${work.id})" class="fa-solid fa-trash-can trash-icon" ></i>
+			<i id="${work.id}" class="fa-solid fa-trash-can trash-icon remove_work" ></i>
 		  </div>`
 }
 
 // Supprime une œuvre avec confirmation utilisateur
-async function deleteWork(id){
+async function deleteWork(e){
+  console.log(e.target.id);
   if (confirm("Voulez-vous supprimer l'élement?")) {
-    const response = await deleteApi(id);
+    const response = await deleteApi(e.target.id);
     if(response.ok){
       loadImageModal();
     }
@@ -310,8 +330,7 @@ function loadImage(){
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            preview.style.backgroundImage = `url(${e.target.result})`;
-            
+          preview.style.backgroundImage = `url(${e.target.result})`;    
         }
         reader.readAsDataURL(file); 
         formImageFieldIsOk = true;
@@ -368,6 +387,11 @@ function showOrHideUpdateButton(){
   if(token!=undefined && token != null && token != "") {
     portfolioHeader[0].insertAdjacentHTML("beforeend",`<button class="portfolio_button" id="showModale"><i class="fa-regular fa-pen-to-square"></i>modifier</button>`); 
     showModale();
+  } else {
+    const element = document.getElementById("showModale");
+    if(element != null && element != undefined) {
+      element.remove();
+    }
   }
 }
 
@@ -409,6 +433,20 @@ function changeButtonState(){
   }
 }
 
+function showOrHideEditionMod(){
+  const token = localStorage.getItem("token");
+  if(token!=undefined && token != null && token != "") {
+    headerParent.insertAdjacentHTML("beforeend",`<div class="edition_mod" id="parent_edition_mod"><i class="fa-regular fa-pen-to-square"></i><p>Mode édition</p></div>	`); 
+  } else {
+    const element = document.getElementById("parent_edition_mod");
+    console.log(element);
+    if(element != null && element != undefined) {
+      element.remove();
+      console.log('test');
+    }
+   }
+}
+
 reloadWork();
 reloadModal();
 showWorks();
@@ -416,4 +454,4 @@ showOrHideUpdateButton();
 showCategories();
 initAuthZone();
 showOrHideCategoryFilter();
-
+showOrHideEditionMod();
